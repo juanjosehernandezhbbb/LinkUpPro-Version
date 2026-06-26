@@ -1,14 +1,14 @@
-namespace LinkUpPro.Domain.Entities;
+using LinkUpPro.Domain.Entities;
 
 public class SolicitudAmistad
 {
     public int Id { get; set; }
 
-    public string EmisorId { get; set; }
-    public ApplicationUser Emisor { get; set; }
+    public string EmisorId { get; set; } = null!;
+    public ApplicationUser Emisor { get; set; } = null!;
 
-    public string ReceptorId { get; set; }
-    public ApplicationUser Receptor { get; set; }
+    public string ReceptorId { get; set; } = null!;
+    public ApplicationUser Receptor { get; set; } = null!;
 
     public EstadoSolicitud Estado { get; set; }
 

@@ -21,12 +21,12 @@ public class NotificacionConfig : IEntityTypeConfiguration<Notificacion>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(n => n.Publicacion)
-            .WithMany()
+            .WithMany(p => p.Notificaciones)
             .HasForeignKey(n => n.PublicacionId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(n => n.Comentario)
-            .WithMany()
+            .WithMany(c => c.Notificaciones)
             .HasForeignKey(n => n.ComentarioId)
             .OnDelete(DeleteBehavior.Restrict);
     }

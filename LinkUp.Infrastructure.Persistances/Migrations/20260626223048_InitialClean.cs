@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LinkUp.Infrastructure.Persistances.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationInitial : Migration
+    public partial class InitialClean : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

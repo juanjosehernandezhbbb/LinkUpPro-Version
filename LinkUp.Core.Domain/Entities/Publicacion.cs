@@ -20,4 +20,5 @@ public class Publicacion
 
     public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
     public ICollection<Reaccion> Reacciones { get; set; } = new List<Reaccion>();
+    public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 }

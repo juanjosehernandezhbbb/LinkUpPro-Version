@@ -1,14 +1,14 @@
-namespace LinkUpPro.Domain.Entities;
+using LinkUpPro.Domain.Entities;
 
 public class PartidaBattleship
 {
     public int Id { get; set; }
 
-    public string Jugador1Id { get; set; }
-    public ApplicationUser Jugador1 { get; set; }
+    public string Jugador1Id { get; set; } = null!;
+    public ApplicationUser Jugador1 { get; set; } = null!;
 
-    public string Jugador2Id { get; set; }
-    public ApplicationUser Jugador2 { get; set; }
+    public string Jugador2Id { get; set; } = null!;
+    public ApplicationUser Jugador2 { get; set; } = null!;
 
     public EstadoPartida Estado { get; set; }
 
@@ -16,7 +16,7 @@ public class PartidaBattleship
     public ApplicationUser? TurnoActualUsuario { get; set; }
 
     public string? GanadorId { get; set; }
-    public ApplicationUser Ganador { get; set; }
+    public ApplicationUser? Ganador { get; set; } 
 
     public DateTime? TurnoAsignadoEn { get; set; }
 

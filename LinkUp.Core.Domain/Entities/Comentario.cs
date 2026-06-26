@@ -31,5 +31,10 @@ public class Comentario
     public DateTime FechaCreacion { get; set; }
     public DateTime? FechaModificacion { get; set; }
     public bool EstaEliminado { get; set; }
+
+    // ============================
+    // RELACIÓN CON NOTIFICACIONES
+    // ============================
+    public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 }
 

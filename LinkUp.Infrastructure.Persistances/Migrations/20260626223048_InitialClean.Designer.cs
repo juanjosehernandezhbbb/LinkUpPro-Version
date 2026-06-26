@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinkUp.Infrastructure.Persistances.Migrations
 {
     [DbContext(typeof(LinkUpContext))]
-    [Migration("20260626220237_MigrationInitial")]
-    partial class MigrationInitial
+    [Migration("20260626223048_InitialClean")]
+    partial class InitialClean
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -455,45 +455,6 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
                     b.ToTable("Reacciones");
                 });
 
-            modelBuilder.Entity("LinkUpPro.Domain.Entities.SolicitudAmistad", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EmisorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("FechaRespuesta")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaSolicitud")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("OcultaParaEmisor")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReceptorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceptorId");
-
-                    b.HasIndex("EmisorId", "ReceptorId")
-                        .IsUnique()
-                        .HasFilter("[Estado] = 1");
-
-                    b.ToTable("SolicitudesAmistad");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -627,6 +588,45 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SolicitudAmistad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EmisorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaRespuesta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaSolicitud")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("OcultaParaEmisor")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReceptorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceptorId");
+
+                    b.HasIndex("EmisorId", "ReceptorId")
+                        .IsUnique()
+                        .HasFilter("[Estado] = 1");
+
+                    b.ToTable("SolicitudesAmistad");
+                });
+
             modelBuilder.Entity("LinkUpPro.Domain.Entities.Amistad", b =>
                 {
                     b.HasOne("LinkUpPro.Domain.Entities.ApplicationUser", "Usuario1")
@@ -730,7 +730,7 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
                         .IsRequired();
 
                     b.HasOne("LinkUpPro.Domain.Entities.Comentario", "Comentario")
-                        .WithMany()
+                        .WithMany("Notificaciones")
                         .HasForeignKey("ComentarioId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -741,7 +741,7 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
                         .IsRequired();
 
                     b.HasOne("LinkUpPro.Domain.Entities.Publicacion", "Publicacion")
-                        .WithMany()
+                        .WithMany("Notificaciones")
                         .HasForeignKey("PublicacionId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -817,25 +817,6 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("LinkUpPro.Domain.Entities.SolicitudAmistad", b =>
-                {
-                    b.HasOne("LinkUpPro.Domain.Entities.ApplicationUser", "Emisor")
-                        .WithMany()
-                        .HasForeignKey("EmisorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("LinkUpPro.Domain.Entities.ApplicationUser", "Receptor")
-                        .WithMany()
-                        .HasForeignKey("ReceptorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Emisor");
-
-                    b.Navigation("Receptor");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -887,6 +868,25 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SolicitudAmistad", b =>
+                {
+                    b.HasOne("LinkUpPro.Domain.Entities.ApplicationUser", "Emisor")
+                        .WithMany()
+                        .HasForeignKey("EmisorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LinkUpPro.Domain.Entities.ApplicationUser", "Receptor")
+                        .WithMany()
+                        .HasForeignKey("ReceptorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Emisor");
+
+                    b.Navigation("Receptor");
+                });
+
             modelBuilder.Entity("LinkUpPro.Domain.Entities.Barco", b =>
                 {
                     b.Navigation("Celdas");
@@ -894,6 +894,8 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
 
             modelBuilder.Entity("LinkUpPro.Domain.Entities.Comentario", b =>
                 {
+                    b.Navigation("Notificaciones");
+
                     b.Navigation("Respuestas");
                 });
 
@@ -907,6 +909,8 @@ namespace LinkUp.Infrastructure.Persistances.Migrations
             modelBuilder.Entity("LinkUpPro.Domain.Entities.Publicacion", b =>
                 {
                     b.Navigation("Comentarios");
+
+                    b.Navigation("Notificaciones");
 
                     b.Navigation("Reacciones");
                 });
