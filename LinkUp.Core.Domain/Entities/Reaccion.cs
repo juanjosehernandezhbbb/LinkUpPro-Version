@@ -1,3 +1,5 @@
+using LinkUpPro.Domain.Enums;
+
 namespace LinkUpPro.Domain.Entities;
 
 public class Reaccion

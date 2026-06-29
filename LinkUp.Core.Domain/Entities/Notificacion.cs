@@ -1,4 +1,5 @@
 using LinkUpPro.Domain.Entities;
+using LinkUpPro.Domain.Enums;
 
 public class Notificacion
 {

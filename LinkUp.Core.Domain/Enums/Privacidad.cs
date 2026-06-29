@@ -1,4 +1,4 @@
-namespace LinkUpPro.Domain.Entities;
+namespace LinkUpPro.Domain.Enums;
 
 public enum Privacidad
     {

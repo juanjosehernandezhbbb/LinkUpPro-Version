@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace LinkUp.Infrastructure.Persistence.Context
 {
-    public class LinkUpContext : IdentityDbContext<ApplicationUser>
+    public class LinkUpContext : DbContext
     {
         public LinkUpContext(DbContextOptions<LinkUpContext> options) : base(options)
         {

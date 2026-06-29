@@ -7,7 +7,10 @@ namespace LinkUpPro.Infrastructure.Persistances.EntitiesConfiguration;
 public class AmistadConfig : IEntityTypeConfiguration<Amistad>
 {
     public void Configure(EntityTypeBuilder<Amistad> builder)
+
+
     {
+
         builder.HasKey(a => a.Id);
 
         builder.HasOne(a => a.Usuario1)
