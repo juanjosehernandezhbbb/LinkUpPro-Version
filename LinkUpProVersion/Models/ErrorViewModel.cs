@@ -1,4 +1,4 @@
-namespace LinkUpProVersion.Models
+namespace LinkUpVersion.Models
 {
     public class ErrorViewModel
     {

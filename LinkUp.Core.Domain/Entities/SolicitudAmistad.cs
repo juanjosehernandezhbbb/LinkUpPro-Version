@@ -1,10 +1,10 @@
-using LinkUpPro.Domain.Entities;
-using LinkUpPro.Domain.Enums;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-public class SolicitudAmistad
+namespace LinkUp.Core.Domain.Entities;
+
+public class SolicitudAmistad : BaseEntity
 {
-    public int Id { get; set; }
-
     public string EmisorId { get; set; } = null!;
     public ApplicationUser Emisor { get; set; } = null!;
 

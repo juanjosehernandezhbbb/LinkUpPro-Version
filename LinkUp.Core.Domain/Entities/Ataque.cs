@@ -1,16 +1,15 @@
-using LinkUpPro.Domain.Enums;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-namespace LinkUpPro.Domain.Entities;
+namespace LinkUp.Core.Domain.Entities; 
 
-public class Ataque
+public class Ataque : BaseEntity
 {
-    public int Id { get; set; }
-
     public int PartidaId { get; set; }
-    public PartidaBattleship Partida { get; set; }
+    public PartidaBattleship Partida { get; set; } = null!;
 
-    public string AtacanteId { get; set; }
-    public ApplicationUser Atacante { get; set; }
+    public string AtacanteId { get; set; } = null!;
+    public ApplicationUser Atacante { get; set; } = null!;
 
     public int Fila { get; set; }
     public int Columna { get; set; }

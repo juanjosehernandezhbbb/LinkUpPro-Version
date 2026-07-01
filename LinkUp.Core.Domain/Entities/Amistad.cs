@@ -1,11 +1,11 @@
-using LinkUpPro.Domain.Enums;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-namespace LinkUpPro.Domain.Entities;
 
-public class Amistad
+namespace LinkUp.Core.Domain.Entities;
+
+public class Amistad : BaseEntity
 {
-    public int Id { get; set; }
-
     public string Usuario1Id { get; set; } = null!;
     public ApplicationUser Usuario1 { get; set; } = null!;
 
@@ -14,6 +14,4 @@ public class Amistad
 
     public EstadoAmistad Estado { get; set; }
 
-    public DateTime FechaCreacion { get; set; }
-    public DateTime? FechaEliminacion { get; set; }
 }

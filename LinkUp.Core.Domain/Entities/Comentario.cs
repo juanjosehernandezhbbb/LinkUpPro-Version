@@ -1,8 +1,11 @@
-namespace LinkUpPro.Domain.Entities;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-public class Comentario
+
+namespace LinkUp.Core.Domain.Entities;
+
+public class Comentario : BaseEntity
 {
-    public int Id { get; set; }
 
     // ============================
     // RELACIÓN CON PUBLICACION

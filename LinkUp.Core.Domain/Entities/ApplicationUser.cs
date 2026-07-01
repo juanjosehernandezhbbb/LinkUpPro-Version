@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+namespace LinkUp.Core.Domain.Entities;
 
-namespace LinkUpPro.Domain.Entities;
-
-public class ApplicationUser : IdentityUser
+public class ApplicationUser 
 {
+    public string Id { get; set; } = null!;
     public string Nombre { get; set; }
     public string Apellido { get; set; }
     public string Telefono { get; set; }

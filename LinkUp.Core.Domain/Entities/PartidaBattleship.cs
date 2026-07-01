@@ -1,8 +1,11 @@
-using LinkUpPro.Domain.Entities;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-public class PartidaBattleship
+
+namespace LinkUp.Core.Domain.Entities;
+
+public class PartidaBattleship : BaseEntity
 {
-    public int Id { get; set; }
 
     public string Jugador1Id { get; set; } = null!;
     public ApplicationUser Jugador1 { get; set; } = null!;

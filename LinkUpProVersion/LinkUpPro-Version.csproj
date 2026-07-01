@@ -16,10 +16,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.17" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LinkUp.Core.Domain\LinkUp.Core.Domain.csproj" />
-    <ProjectReference Include="..\LinkUp.Infrastructure.Persistances\LinkUp.Infrastructure.Persistances.csproj" />
-    <ProjectReference Include="..\LinkUp.Infrastructure.Persistance\LinkUp.Infrastructure.Identity.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\LinkUp.Core.Domain\LinkUp.Core.Domain.csproj" />
+		<ProjectReference Include="..\LinkUp.Infrastructure.Persistence\LinkUp.Infrastructure.Persistence.csproj" />
+		<ProjectReference Include="..\LinkUp.Infrastructure.Identity\LinkUp.Infrastructure.Identity.csproj" />
+	</ItemGroup>
 
 </Project>

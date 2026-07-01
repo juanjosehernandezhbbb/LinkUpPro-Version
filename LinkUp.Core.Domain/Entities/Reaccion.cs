@@ -1,10 +1,11 @@
-using LinkUpPro.Domain.Enums;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-namespace LinkUpPro.Domain.Entities;
 
-public class Reaccion
+namespace LinkUp.Core.Domain.Entities;
+
+public class Reaccion : BaseEntity
 {
-    public int Id { get; set; }
 
     public int PublicacionId { get; set; }
     public Publicacion Publicacion { get; set; }
@@ -13,5 +14,4 @@ public class Reaccion
     public ApplicationUser Usuario { get; set; }
 
     public TipoReaccion Tipo { get; set; }
-    public DateTime FechaCreacion { get; set; }
 }

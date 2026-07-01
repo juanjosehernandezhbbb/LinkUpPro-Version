@@ -1,8 +1,8 @@
-using LinkUpProVersion.Models;
+using LinkUpVersion.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace LinkUpProVersion.Controllers
+namespace LinkUpVersion.Controllers
 {
     public class HomeController : Controller
     {
