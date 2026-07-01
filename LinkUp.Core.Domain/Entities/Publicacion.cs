@@ -1,24 +1,24 @@
-using LinkUpPro.Domain.Enums;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-namespace LinkUpPro.Domain.Entities;
 
-public class Publicacion
+namespace LinkUp.Core.Domain.Entities;
+
+public class Publicacion : BaseEntity
 {
-    public int Id { get; set; }
 
     public string AutorId { get; set; }
     public ApplicationUser Autor { get; set; }
 
     public string Contenido { get; set; }
     public TipoContenido TipoContenido { get; set; }
+
     public string? ImagenUrl { get; set; }
     public string? YoutubeUrl { get; set; }
     public Privacidad Privacidad { get; set; }
     public bool PermiteComentarios { get; set; }
 
-    public DateTime FechaCreacion { get; set; }
     public DateTime? FechaModificacion { get; set; }
-    public bool EstaEliminada { get; set; }
 
     public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
     public ICollection<Reaccion> Reacciones { get; set; } = new List<Reaccion>();

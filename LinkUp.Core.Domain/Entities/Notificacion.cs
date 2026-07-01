@@ -1,9 +1,11 @@
-using LinkUpPro.Domain.Entities;
-using LinkUpPro.Domain.Enums;
+using LinkUp.Core.Domain.Common;
+using LinkUp.Core.Domain.Enums;
 
-public class Notificacion
+
+namespace LinkUp.Core.Domain.Entities;
+
+public class Notificacion : BaseEntity
 {
-    public int Id { get; set; }
 
     public string DestinatarioId { get; set; } = null!;
     public ApplicationUser Destinatario { get; set; } = null!;
@@ -20,5 +22,4 @@ public class Notificacion
     public Comentario? Comentario { get; set; }
 
     public bool Leida { get; set; }
-    public DateTime FechaCreacion { get; set; }
 }

@@ -1,9 +1,10 @@
-namespace LinkUpPro.Domain.Entities;
 
-public class CeldaBarco
+using LinkUp.Core.Domain.Common;
+
+namespace LinkUp.Core.Domain.Entities;
+
+public class CeldaBarco : BaseEntity
 {
-    public int Id { get; set; }
-
     public int BarcoId { get; set; }
     public Barco Barco { get; set; }
 
