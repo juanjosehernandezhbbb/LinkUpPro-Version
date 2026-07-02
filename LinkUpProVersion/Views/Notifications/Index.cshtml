@@ -1,0 +1,33 @@
+@model IReadOnlyList<LinkUp.Core.Application.DTOs.Profile.NotificacionDto>
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<h2>Notificaciones</h2>
+
+@await Html.PartialAsync("_AlertMessages")
+
+<form asp-action="MarkAllAsRead" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-sm btn-outline-primary mb-3">Marcar todas como leídas</button>
+</form>
+
+<div class="list-group">
+    @foreach (var n in Model)
+    {
+        <div class="list-group-item d-flex justify-content-between align-items-start">
+            <div>
+                <div class="fw-bold">@n.Mensaje</div>
+                <div class="text-muted small">@n.CreatedAt.ToString("g")</div>
+            </div>
+            <div>
+                <form asp-action="MarkAsRead" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@n.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Marcar</button>
+                </form>
+                <a asp-action="GoToContent" asp-route-id="@n.Id" class="btn btn-sm btn-primary ms-2">Ir</a>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,28 @@
+@model IReadOnlyList<LinkUp.Core.Application.DTOs.Friends.AmigoDto>
+@{
+    ViewData["Title"] = "Friends List";
+}
+
+<h2>Friends</h2>
+
+@await Html.PartialAsync("_AlertMessages")
+
+<div class="row">
+    @foreach (var a in Model)
+    {
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card p-2">
+                <div class="d-flex align-items-center">
+                    <img src="@a.FotoAmigoUrl" class="rounded-circle me-3" style="width:48px;height:48px;object-fit:cover;" />
+                    <div>
+                        <div class="fw-bold">@a.NombreAmigo</div>
+                        <div class="small text-muted">Desde @a.AmigosDesde.ToString("d")</div>
+                    </div>
+                    <div class="ms-auto">
+                        <a asp-controller="Friends" asp-action="Profile" asp-route-username="@a.AmigoId" class="btn btn-sm btn-outline-primary">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

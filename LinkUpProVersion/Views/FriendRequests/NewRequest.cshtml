@@ -1,0 +1,18 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "New Friend Request";
+}
+
+<h2>New Request</h2>
+
+@await Html.PartialAsync("_AlertMessages")
+
+<form asp-action="SendRequest" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">User Id to request</label>
+        <input type="text" name="receptorId" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Send Request</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+</form>

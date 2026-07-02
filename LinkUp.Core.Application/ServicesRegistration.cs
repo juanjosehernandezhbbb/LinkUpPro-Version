@@ -28,6 +28,7 @@ public static class ServicesRegistration
         services.AddTransient<ISolicitudAmistadService, SolicitudAmistadService>();
         services.AddTransient<IAmistadService, AmistadService>();
         services.AddTransient<INotificacionService, NotificacionService>();
+        services.AddTransient<IBattleshipService, BattleshipService>();
 
     }
 }

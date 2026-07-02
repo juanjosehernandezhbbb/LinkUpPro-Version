@@ -1,5 +1,7 @@
 ﻿
+using LinkUp.Core.Application.Interfaces;
 using LinkUp.Infrastructure.Identity.Entities;
+using LinkUp.Infrastructure.Identity.Services;
 using LinkUp.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +45,7 @@ namespace LinkUp.Infrastructure.Identity
                 .AddSignInManager()
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
+            
 
             // Vigencia de tokens
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
@@ -62,9 +65,13 @@ namespace LinkUp.Infrastructure.Identity
                 opt.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 opt.SlidingExpiration = true; // Renueva la sesión si el usuario interactúa dentro de la app
 
-                opt.LoginPath = "/Login";
-                opt.AccessDeniedPath = "/Login/AccessDenied";
+                opt.LoginPath = "/Account/Login";
+                opt.AccessDeniedPath = "/Account/AccessDenied";
             });
+            #endregion
+
+            #region Services
+            services.AddTransient<IAccountService, AccountService>();
             #endregion
         }
         #region private methods

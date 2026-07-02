@@ -1,0 +1,38 @@
+@model LinkUpProVersion.ViewModels.EditProfileViewModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<h2>Edit Profile</h2>
+
+@await Html.PartialAsync("_AlertMessages")
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label">First name</label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Apellido" class="form-label">Last name</label>
+        <input asp-for="Apellido" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="FotoPerfil" class="form-label">Profile image</label>
+        <input asp-for="FotoPerfil" type="file" class="form-control image-preview-input" />
+    </div>
+
+    <h5>Change password</h5>
+    <div class="mb-3">
+        <label asp-for="CurrentPassword" class="form-label">Current password</label>
+        <input asp-for="CurrentPassword" type="password" class="form-control toggle-password" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="NewPassword" class="form-label">New password</label>
+        <input asp-for="NewPassword" type="password" class="form-control toggle-password" id="newPassword" />
+        <script>window.initPasswordStrength && window.initPasswordStrength('#newPassword');</script>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>

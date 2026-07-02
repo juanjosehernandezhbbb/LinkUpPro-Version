@@ -1,0 +1,30 @@
+@model LinkUp.Core.Application.DTOs.Posts.CrearPublicacionDto
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+<h2>Create Post</h2>
+
+@await Html.PartialAsync("_AlertMessages")
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="Contenido" class="form-label">Content</label>
+        <textarea asp-for="Contenido" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="TipoContenido" class="form-label">Content Type</label>
+        <select asp-for="TipoContenido" class="form-select">
+            <option value="0">Text</option>
+            <option value="1">Image</option>
+            <option value="2">Video</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ImagenUrl" class="form-label">Image (client preview)</label>
+        <input type="file" name="image" class="form-control image-preview-input" />
+    </div>
+    <button type="submit" class="btn btn-primary">Publish</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
