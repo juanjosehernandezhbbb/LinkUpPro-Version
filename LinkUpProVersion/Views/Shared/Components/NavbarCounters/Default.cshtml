@@ -1,0 +1,11 @@
+@model LinkUpProVersion.ViewComponents.NavbarCountersViewModel
+<span>
+    @if (Model.PendingRequests > 0)
+    {
+        <span class="badge bg-danger ms-1">@Model.PendingRequests</span>
+    }
+    @if (Model.UnreadNotifications > 0)
+    {
+        <span class="badge bg-warning text-dark ms-1">@Model.UnreadNotifications</span>
+    }
+</span>

@@ -1,0 +1,21 @@
+@model (string ProfileImageUrl, string FirstName, string LastName, string Username, bool LinkToProfile)
+<div class="card user-card">
+  <div class="row g-0 align-items-center">
+    <div class="col-auto">
+      <img src="@Model.ProfileImageUrl" class="rounded-circle" alt="@Model.Username" style="width:48px;height:48px;object-fit:cover;" />
+    </div>
+    <div class="col">
+      <div class="card-body py-2">
+        @if (Model.LinkToProfile)
+        {
+            <a asp-controller="Friends" asp-action="Profile" asp-route-username="@Model.Username">@Model.FirstName @Model.LastName</a>
+        }
+        else
+        {
+            <span>@Model.FirstName @Model.LastName</span>
+        }
+        <div class="text-muted small">@Model.Username</div>
+      </div>
+    </div>
+  </div>
+</div>

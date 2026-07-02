@@ -4,11 +4,16 @@ using LinkUp.Infrastructure.Persistence;
 using LinkUp.Core.Application;
 using Microsoft.EntityFrameworkCore;
 using LinkUp.Core.Application;
+using LinkUpProVersion.Filters;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 builder.Services.AddRazorPages();
 
 // Persistence and application layers
