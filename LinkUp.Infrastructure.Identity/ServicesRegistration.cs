@@ -1,11 +1,12 @@
 ﻿using LinkUp.Core.Application.Interfaces;
-using LinkUp.Infrastructure.Identity.Entities;
+using LinkUp.Core.Domain.Entities; // IMPORTANTE: Para que reconozca ApplicationUser
 using LinkUp.Infrastructure.Identity.Services;
 using LinkUp.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace LinkUp.Infrastructure.Identity
 {
@@ -16,10 +17,10 @@ namespace LinkUp.Infrastructure.Identity
             // 1. Configurar Contexto de Base de Datos
             GeneralConfiguration(services, config);
 
-            // 2. Configurar Identity
-            services.AddIdentity<AppUser, IdentityRole>(options =>
+            // 2. Configurar Identity - AQUI ESTA LA SOLUCION: Usar ApplicationUser
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                // Reglas de contraseña
+                // Reglas de contrasena
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
@@ -44,7 +45,7 @@ namespace LinkUp.Infrastructure.Identity
                 opt.TokenLifespan = TimeSpan.FromHours(24);
             });
 
-            // 4. Configurar Cookie de Autenticación (Reemplaza AddAuthentication para evitar conflictos)
+            // 4. Configurar Cookie de Autenticacion
             services.ConfigureApplicationCookie(options =>
             {
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
@@ -72,7 +73,7 @@ namespace LinkUp.Infrastructure.Identity
 
                 if (string.IsNullOrEmpty(connectionString))
                 {
-                    throw new InvalidOperationException("La cadena de conexión 'DefaultConnection' no se encuentra en appsettings.json");
+                    throw new InvalidOperationException("La cadena de conexion 'DefaultConnection' no se encuentra en appsettings.json");
                 }
 
                 services.AddDbContext<IdentityContext>(

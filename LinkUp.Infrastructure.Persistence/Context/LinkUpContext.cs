@@ -1,5 +1,4 @@
 ﻿using LinkUp.Core.Domain.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -29,8 +28,7 @@ namespace LinkUp.Infrastructure.Persistence.Context
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-
+            modelBuilder.Entity<ApplicationUser>().ToTable("users", "Identity");
         }
     }
 }
-

@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using LinkUp.Core.Application.DTOs.Account;
 using LinkUp.Core.Application.Interfaces;
-using LinkUp.Infrastructure.Identity.Entities; // Asegúrate de que apunte a tu AppUser
+using LinkUp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LinkUp.Infrastructure.Identity.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountService(UserManager<AppUser> userManager)
+        public AccountService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -31,7 +27,7 @@ namespace LinkUp.Infrastructure.Identity.Services
             if (existingUserByEmail != null)
             {
                 response.HasError = true;
-                response.Error = "Este correo electrónico ya se encuentra registrado.";
+                response.Error = "Este correo electronico ya se encuentra registrado.";
                 return response;
             }
 
@@ -44,13 +40,15 @@ namespace LinkUp.Infrastructure.Identity.Services
             }
 
             // 2. Mapear al usuario de Identity
-            var user = new AppUser
+            var user = new ApplicationUser
             {
                 UserName = request.UserName,
                 Email = request.Email,
                 Nombre = request.Nombre,
                 Apellido = request.Apellido,
-                PhoneNumber = request.Telefono,
+                Telefono = request.Telefono, // Propiedad de tu ApplicationUser
+                PhoneNumber = request.Telefono, // Propiedad base de IdentityUser
+                FechaRegistro = DateTime.Now,
                 EmailConfirmed = false // Regla del documento: nace inactiva
             };
 
@@ -64,7 +62,7 @@ namespace LinkUp.Infrastructure.Identity.Services
                 return response;
             }
 
-            // 4. Generar el Token de activación
+            // 4. Generar el Token de activacion
             response.UserId = user.Id;
             response.ActivationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 

@@ -1,4 +1,4 @@
-using LinkUp.Infrastructure.Identity.Entities;
+using LinkUp.Core.Domain.Entities;
 using LinkUpProVersion.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -9,10 +9,10 @@ namespace LinkUpProVersion.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -43,7 +43,7 @@ namespace LinkUpProVersion.Controllers
             var check = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: true);
             if (!check.Succeeded)
             {
-                ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
+                ModelState.AddModelError(string.Empty, "Credenciales invalidas.");
                 return View(model);
             }
 
@@ -55,7 +55,7 @@ namespace LinkUpProVersion.Controllers
 
             await _signInManager.SignInAsync(user, props);
 
-            // REDIRECCIÓN ACTUALIZADA A DASHBOARD
+            // REDIRECCION ACTUALIZADA A DASHBOARD
             return Redirect(returnUrl ?? Url.Action("Index", "Dashboard")!);
         }
 
@@ -70,13 +70,15 @@ namespace LinkUpProVersion.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = new AppUser
+            var user = new ApplicationUser
             {
                 UserName = model.UserName,
                 Email = model.Email,
                 Nombre = model.Nombre,
                 Apellido = model.Apellido,
                 PhoneNumber = model.Telefono,
+                Telefono = model.Telefono, // Mapeado para tu ApplicationUser
+                FechaRegistro = DateTime.Now, // Mapeado para tu ApplicationUser
                 EmailConfirmed = true
             };
 
@@ -103,7 +105,7 @@ namespace LinkUpProVersion.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user != null) { /* TODO: Lógica email */ }
+            if (user != null) { /* TODO: Logica email */ }
 
             TempData["Success"] = "Instrucciones enviadas.";
             return RedirectToAction("Login");
@@ -133,7 +135,7 @@ namespace LinkUpProVersion.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
-                TempData["Success"] = "Contraseña restablecida.";
+                TempData["Success"] = "Contrasena restablecida.";
                 return RedirectToAction("Login");
             }
 

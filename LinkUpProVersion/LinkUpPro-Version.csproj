@@ -20,6 +20,7 @@
 		<ProjectReference Include="..\LinkUp.Core.Domain\LinkUp.Core.Domain.csproj" />
 		<ProjectReference Include="..\LinkUp.Infrastructure.Persistence\LinkUp.Infrastructure.Persistence.csproj" />
 		<ProjectReference Include="..\LinkUp.Infrastructure.Identity\LinkUp.Infrastructure.Identity.csproj" />
+		<ProjectReference Include="..\Shared\Shared.csproj" />
 	</ItemGroup>
 
 </Project>
