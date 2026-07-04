@@ -17,7 +17,7 @@ public class ComentarioConfig : IEntityTypeConfiguration<Comentario>
             .HasMaxLength(500);
 
         builder.HasOne(c => c.Publicacion)
-            .WithMany()
+            .WithMany(p => p.Comentarios)
             .HasForeignKey(c => c.PublicacionId)
             .OnDelete(DeleteBehavior.Cascade);
 

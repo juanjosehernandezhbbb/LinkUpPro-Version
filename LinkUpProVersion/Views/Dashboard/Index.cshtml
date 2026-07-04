@@ -1,0 +1,116 @@
+﻿@model LinkUp.Web.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <!-- 1. FORMULARIO DE CREACIÓN -->
+    <div class="card mb-4">
+        <div class="card-header">Crear Publicación</div>
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label asp-for="NuevaPublicacion.Contenido" class="form-label"></label>
+                    <textarea asp-for="NuevaPublicacion.Contenido" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label asp-for="NuevaPublicacion.TipoContenido" class="form-label"></label>
+                        <select asp-for="NuevaPublicacion.TipoContenido" id="tipoContenido" class="form-select">
+                            <option value="0">Imagen</option>
+                            <option value="1">Video de YouTube</option>
+                        </select>
+                    </div>
+                    <!-- Estos divs se mostrarán/ocultarán con JS -->
+                    <div class="col-md-8" id="divImagen">
+                        <label class="form-label">Subir Imagen</label>
+                        <input asp-for="NuevaPublicacion.ArchivoImagen" type="file" class="form-control" accept="image/*" />
+                    </div>
+                    <div class="col-md-8" id="divVideo" style="display:none;">
+                        <label class="form-label">Enlace de YouTube</label>
+                        <input asp-for="NuevaPublicacion.YoutubeUrl" type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <label asp-for="NuevaPublicacion.Privacidad" class="form-label"></label>
+                        <select asp-for="NuevaPublicacion.Privacidad" class="form-select">
+                            <option value="0">Solo amigos</option>
+                            <option value="1">Solo yo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <div class="form-check">
+                            <input asp-for="NuevaPublicacion.PermiteComentarios" class="form-check-input" checked />
+                            <label class="form-check-label">Permitir comentarios</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Publicar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. FILTROS (Formulario GET) -->
+    <div class="card mb-4">
+        <div class="card-header">Filtros</div>
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <input asp-for="Busqueda" class="form-control" placeholder="Buscar contenido..." />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">Buscar</button>
+                </div>
+                <div class="col-md-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Limpiar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. FEED DE PUBLICACIONES -->
+    @if (!Model.Publicaciones.Any())
+    {
+        <div class="alert alert-info">Todavía no ha realizado ninguna publicación.</div>
+    }
+    else
+    {
+        @foreach (var post in Model.Publicaciones)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <!-- Corregido: Accediendo a los campos Nombre y Apellido de tu clase -->
+                    <h5 class="card-title">@post.Autor.Nombre @post.Autor.Apellido</h5>
+                    <p class="text-muted small">@post.CreatedAt.ToString("dd/MM/yyyy HH:mm") @(post.UpdatedAt.HasValue ? "(Editada)" : "")</p>
+                    <p class="card-text">@post.Contenido</p>
+                    
+                    @if (post.TipoContenido == LinkUp.Core.Domain.Enums.TipoContenido.Imagen && !string.IsNullOrEmpty(post.ImagenUrl))
+                    {
+                        <img src="@post.ImagenUrl" class="img-fluid" alt="Post image" />
+                    }
+                    else if (post.TipoContenido == LinkUp.Core.Domain.Enums.TipoContenido.Video && !string.IsNullOrEmpty(post.YoutubeUrl))
+                    {
+                        <!-- Incrustar video aquí -->
+                        <div class="ratio ratio-16x9">
+                            <iframe src="@post.YoutubeUrl" allowfullscreen></iframe>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('tipoContenido').addEventListener('change', function () {
+            const esImagen = this.value === "0";
+            document.getElementById('divImagen').style.display = esImagen ? 'block' : 'none';
+            document.getElementById('divVideo').style.display = esImagen ? 'none' : 'block';
+        });
+    </script>
+}

@@ -3,55 +3,45 @@ using LinkUp.Infrastructure.Identity;
 using LinkUp.Infrastructure.Persistence;
 using LinkUp.Core.Application;
 using Microsoft.EntityFrameworkCore;
-using LinkUp.Core.Application;
 using LinkUpProVersion.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 1. Configuración de Servicios
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
 });
-builder.Services.AddRazorPages();
 
-// Persistence and application layers
+// Registrar capas de arquitectura una sola vez
 builder.Services.AddPersistenceLayerIoc(builder.Configuration);
 builder.Services.AddApplicationLayer();
 builder.Services.AddHttpContextAccessor();
 
-// Identity services (configured in LinkUp.Infrastructure.Identity)
+// Identidad
 builder.Services.AddIdentityLayerIocForWebApp(builder.Configuration);
-builder.Services.AddApplicationLayer();
-
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 2. Configuración del Pipeline HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // Importante para cargar tus JS, CSS e imágenes
 app.UseRouting();
 
-// Authentication must come before Authorization
+// El orden es crucial: Autenticación antes de Autorización
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+// 3. Mapeo de Rutas
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-app.MapRazorPages();
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

@@ -24,5 +24,7 @@ public class ReaccionConfig : IEntityTypeConfiguration<Reaccion>
 
         builder.HasIndex(r => new { r.PublicacionId, r.UsuarioId })
             .IsUnique();
+
+        builder.HasQueryFilter(r => !r.IsDeleted);
     }
 }

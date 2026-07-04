@@ -259,9 +259,6 @@ namespace LinkUp.Infrastructure.Persistence.Migrations
                     b.Property<int>("PublicacionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PublicacionId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -272,8 +269,6 @@ namespace LinkUp.Infrastructure.Persistence.Migrations
                     b.HasIndex("ComentarioPadreId");
 
                     b.HasIndex("PublicacionId");
-
-                    b.HasIndex("PublicacionId1");
 
                     b.ToTable("Comentarios");
                 });
@@ -606,14 +601,10 @@ namespace LinkUp.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("LinkUp.Core.Domain.Entities.Publicacion", "Publicacion")
-                        .WithMany()
+                        .WithMany("Comentarios")
                         .HasForeignKey("PublicacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("LinkUp.Core.Domain.Entities.Publicacion", null)
-                        .WithMany("Comentarios")
-                        .HasForeignKey("PublicacionId1");
 
                     b.Navigation("Autor");
 

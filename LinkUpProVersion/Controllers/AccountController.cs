@@ -22,7 +22,6 @@ namespace LinkUpProVersion.Controllers
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
-            if (User?.Identity?.IsAuthenticated ?? false) return RedirectToAction("Index", "Home");
             ViewData["ReturnUrl"] = returnUrl;
             return View(new LoginViewModel());
         }
@@ -32,30 +31,19 @@ namespace LinkUpProVersion.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
-            if (User?.Identity?.IsAuthenticated ?? false) return RedirectToAction("Index", "Home");
             if (!ModelState.IsValid) return View(model);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(model.UserName);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Usuario no encontrado.");
                 return View(model);
             }
 
             var check = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: true);
             if (!check.Succeeded)
             {
-                if (check.IsLockedOut)
-                {
-                    ModelState.AddModelError(string.Empty, "Account locked out.");
-                    return View(model);
-                }
-                if (!user.EmailConfirmed)
-                {
-                    ModelState.AddModelError(string.Empty, "Account not activated. Check your email or resend activation.");
-                    return View(model);
-                }
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
                 return View(model);
             }
 
@@ -67,90 +55,45 @@ namespace LinkUpProVersion.Controllers
 
             await _signInManager.SignInAsync(user, props);
 
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction("Index", "Home");
+            // REDIRECCIÓN ACTUALIZADA A DASHBOARD
+            return Redirect(returnUrl ?? Url.Action("Index", "Dashboard")!);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Register()
-        {
-            if (User?.Identity?.IsAuthenticated ?? false) return RedirectToAction("Index", "Home");
-            return View(new RegisterViewModel());
-        }
+        public IActionResult Register() => View(new RegisterViewModel());
 
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (User?.Identity?.IsAuthenticated ?? false) return RedirectToAction("Index", "Home");
             if (!ModelState.IsValid) return View(model);
 
             var user = new AppUser
             {
-                UserName = model.Email,
+                UserName = model.UserName,
                 Email = model.Email,
-                Nombre = model.FirstName,
-                Apellido = model.LastName,
-                EmailConfirmed = false
+                Nombre = model.Nombre,
+                Apellido = model.Apellido,
+                PhoneNumber = model.Telefono,
+                EmailConfirmed = true
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                // TODO: Generate email confirmation token and send email
-                // For now, manually confirm for testing
-                user.EmailConfirmed = true;
-                await _userManager.UpdateAsync(user);
-
-                TempData["Success"] = "Registration successful. You can now login.";
+                TempData["Success"] = "Registro exitoso.";
                 return RedirectToAction("Login");
             }
 
-            foreach (var err in result.Errors)
-                ModelState.AddModelError(string.Empty, err.Description);
-
+            foreach (var err in result.Errors) ModelState.AddModelError(string.Empty, err.Description);
             return View(model);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> ActivateAccount(string token)
-        {
-            if (string.IsNullOrEmpty(token)) return BadRequest();
-            TempData["Success"] = "Account activated successfully.";
-            return RedirectToAction("Login");
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult ResendActivation()
-        {
-            if (User?.Identity?.IsAuthenticated ?? false) return RedirectToAction("Index", "Home");
-            return View();
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResendActivation(string email)
-        {
-            if (string.IsNullOrEmpty(email)) return View();
-            // TODO: Send activation email
-            TempData["Success"] = "Activation email sent.";
-            return RedirectToAction("Login");
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult ForgotPassword()
-        {
-            if (User?.Identity?.IsAuthenticated ?? false) return RedirectToAction("Index", "Home");
-            return View(new ForgotPasswordViewModel());
-        }
+        public IActionResult ForgotPassword() => View(new ForgotPasswordViewModel());
 
         [AllowAnonymous]
         [HttpPost]
@@ -158,22 +101,19 @@ namespace LinkUpProVersion.Controllers
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null && user.EmailConfirmed)
-            {
-                // TODO: Generate password reset token and send email
-            }
-            TempData["Success"] = "Password reset instructions sent to your email.";
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user != null) { /* TODO: Lógica email */ }
+
+            TempData["Success"] = "Instrucciones enviadas.";
             return RedirectToAction("Login");
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult ResetPassword(string token, string email)
+        public IActionResult ResetPassword(string token, string userName)
         {
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email)) return BadRequest();
-            var vm = new ResetPasswordViewModel { Token = token, Email = email };
-            return View(vm);
+            return View(new ResetPasswordViewModel { Token = token, UserName = userName });
         }
 
         [AllowAnonymous]
@@ -182,23 +122,22 @@ namespace LinkUpProVersion.Controllers
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
-            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
             if (user == null)
             {
-                TempData["Error"] = "User not found.";
+                TempData["Error"] = "Usuario no encontrado.";
                 return View(model);
             }
 
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
-                TempData["Success"] = "Password reset successful. Please login.";
+                TempData["Success"] = "Contraseña restablecida.";
                 return RedirectToAction("Login");
             }
 
-            foreach (var err in result.Errors)
-                ModelState.AddModelError(string.Empty, err.Description);
-
+            foreach (var err in result.Errors) ModelState.AddModelError(string.Empty, err.Description);
             return View(model);
         }
 
@@ -213,9 +152,6 @@ namespace LinkUpProVersion.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
+        public IActionResult AccessDenied() => View();
     }
 }

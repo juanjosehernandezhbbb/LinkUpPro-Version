@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using LinkUp.Core.Application.Interfaces.Shared;
 using LinkUp.Infrastructure.Shared.Services;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace LinkUp.Infrastructure.Shared;
-
-public static class ServicesRegistration
+namespace LinkUp.Infrastructure.Shared
 {
-    public static void AddSharedInfrastructure(this IServiceCollection services)
+    public static class ServicesRegistration
     {
-        services.AddTransient<IFileStorageService, FileStorageService>();
-        services.AddTransient<IEmailService, EmailService>();
+        public static void AddSharedInfrastructure(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddTransient<IFileStorageService, FileStorageService>();
+            services.AddTransient<IEmailService, EmailService>();
+
+        }
     }
 }

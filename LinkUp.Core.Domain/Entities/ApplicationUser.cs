@@ -1,12 +1,11 @@
-﻿
-namespace LinkUp.Core.Domain.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class ApplicationUser 
+namespace LinkUp.Core.Domain.Entities;
+public class ApplicationUser : IdentityUser
 {
-    public string Id { get; set; } = null!;
-    public string Nombre { get; set; }
-    public string Apellido { get; set; }
-    public string Telefono { get; set; }
+    public string Nombre { get; set; } = null!;
+    public string Apellido { get; set; } = null!;
+    public string Telefono { get; set; } = null!;
     public string? FotoPerfilUrl { get; set; }
     public DateTime FechaRegistro { get; set; }
 }

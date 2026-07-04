@@ -1,83 +1,90 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LinkUp Pro</title>
+    <!-- Estilos -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LinkUpVersion.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="bg-light">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom mb-3 shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">LinkUp Pro</a>
+                <!-- LOGO DINÁMICO: Cambia a Dashboard si estás logueado -->
+                <a class="navbar-brand fw-bold" asp-controller="@((User?.Identity?.IsAuthenticated ?? false) ? "Dashboard" : "Home")" asp-action="Index">LinkUp Pro</a>
+                
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Friends" asp-action="Index">Amigos</a></li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="FriendRequests" asp-action="Index">Solicitudes de amistad
-                                @* badge rendered by NavbarCountersViewComponent *@
-                                @await Component.InvokeAsync("NavbarCounters")
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Notifications" asp-action="Index">Notificaciones</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Battleship" asp-action="Index">Battleship</a></li>
-                    </ul>
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <!-- ENLACE "INICIO" DINÁMICO -->
+                            <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index">Inicio</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Friends" asp-action="Index">Amigos</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="FriendRequests" asp-action="Index">
+                                    Solicitudes @await Component.InvokeAsync("NavbarCounters")
+                                </a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Notifications" asp-action="Index">Notificaciones</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Battleship" asp-action="Index">Battleship</a></li>
+                        </ul>
+                    }
 
                     <ul class="navbar-nav ms-auto">
                         @if (User?.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Profile" asp-action="Index">Mi perfil</a>
+                                <a class="nav-link btn btn-outline-light btn-sm px-3" asp-controller="Profile" asp-action="Index">Mi Perfil</a>
                             </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            <li class="nav-item ms-lg-3">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-link nav-link" style="display:inline;padding:0;border:none;background:none;">Cerrar sesión</button>
+                                    <button type="submit" class="nav-link btn btn-link text-white text-decoration-none">Cerrar sesión</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Iniciar sesión</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Registro</a></li>
+                            <li class="nav-item"><a class="nav-link btn btn-primary btn-sm px-3 text-white" asp-controller="Account" asp-action="Register">Registro</a></li>
                         }
                     </ul>
                 </div>
             </div>
         </nav>
-        <div class="container">
-            @await Html.PartialAsync("_AlertMessages")
-        </div>
     </header>
 
     <div class="container">
+        <!-- Contenedor para mensajes globales (Alertas) -->
         <main role="main" class="pb-3">
+            @await Html.PartialAsync("_AlertMessages")
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container">
-            &copy; 2026 - LinkUp Pro
+    <footer class="border-top footer text-muted mt-5 py-3 bg-white">
+        <div class="container text-center">
+            &copy; 2026 - LinkUp Pro | Ciencia, Tecnología e Innovación
         </div>
     </footer>
 
+    <!-- Scripts Base -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts de Funcionalidad -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/password-toggle.js" asp-append-version="true"></script>
     <script src="~/js/password-strength.js" asp-append-version="true"></script>
     <script src="~/js/image-upload-preview.js" asp-append-version="true"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

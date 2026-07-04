@@ -1,84 +1,67 @@
-﻿
-using LinkUp.Core.Application.Interfaces;
+﻿using LinkUp.Core.Application.Interfaces;
 using LinkUp.Infrastructure.Identity.Entities;
 using LinkUp.Infrastructure.Identity.Services;
 using LinkUp.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Org.BouncyCastle.Security;
-
 
 namespace LinkUp.Infrastructure.Identity
 {
     public static class ServicesRegistration
     {
-        //Extension method - Decorator pattern
-        public static void AddIdentityLayerIocForWebApp(this IServiceCollection services, IConfiguration config)
-        { 
-        GeneralConfiguration(services, config);
+        public static IServiceCollection AddIdentityLayerIocForWebApp(this IServiceCollection services, IConfiguration config)
+        {
+            // 1. Configurar Contexto de Base de Datos
+            GeneralConfiguration(services, config);
 
-            #region Identity
-            services.Configure<IdentityOptions>(opt =>
+            // 2. Configurar Identity
+            services.AddIdentity<AppUser, IdentityRole>(options =>
             {
-                // Reglas de contraseña (están correctas según el doc)
-                opt.Password.RequiredLength = 8;
-                opt.Password.RequireDigit = true;
-                opt.Password.RequireNonAlphanumeric = true;
-                opt.Password.RequireLowercase = true;
-                opt.Password.RequireUppercase = true;
+                // Reglas de contraseña
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
 
-                // Bloqueo temporal: 5 intentos fallidos y 15 minutos de bloqueo
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-                opt.Lockout.MaxFailedAccessAttempts = 5;
-                opt.Lockout.AllowedForNewUsers = true;
+                // Bloqueo temporal
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
 
-                // Correo único y activación obligatoria
-                opt.User.RequireUniqueEmail = true;
-                opt.SignIn.RequireConfirmedEmail = true;
-            });
+                // Correo
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddEntityFrameworkStores<IdentityContext>()
+            .AddDefaultTokenProviders();
 
-            services.AddIdentityCore<AppUser>()
-                .AddRoles<IdentityRole>()
-                .AddSignInManager()
-                .AddEntityFrameworkStores<IdentityContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
-            
-
-            // Vigencia de tokens
+            // 3. Vigencia de tokens
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
             {
-                // Vigencia para el token de activación (24 horas)
                 opt.TokenLifespan = TimeSpan.FromHours(24);
             });
 
-            services.AddAuthentication(opt =>
+            // 4. Configurar Cookie de Autenticación (Reemplaza AddAuthentication para evitar conflictos)
+            services.ConfigureApplicationCookie(options =>
             {
-                opt.DefaultScheme = IdentityConstants.ApplicationScheme;
-                opt.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-                opt.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
-            }).AddCookie(IdentityConstants.ApplicationScheme, opt =>
-            {
-                // Cierre automático por inactividad de 30 minutos
-                opt.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                opt.SlidingExpiration = true; // Renueva la sesión si el usuario interactúa dentro de la app
-
-                opt.LoginPath = "/Account/Login";
-                opt.AccessDeniedPath = "/Account/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.SlidingExpiration = true;
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
             });
-            #endregion
 
-            #region Services
+            // 5. Servicios
             services.AddTransient<IAccountService, AccountService>();
-            #endregion
+
+            return services;
         }
-        #region private methods
+
         private static void GeneralConfiguration(IServiceCollection services, IConfiguration config)
         {
-            #region contexts
-            if(config.GetValue<bool>("UseInMemoryDataBase"))
+            if (config.GetValue<bool>("UseInMemoryDataBase"))
             {
                 services.AddDbContext<IdentityContext>(options =>
                     options.UseInMemoryDatabase("AppDb"));
@@ -86,25 +69,23 @@ namespace LinkUp.Infrastructure.Identity
             else
             {
                 var connectionString = config.GetConnectionString("DefaultConnection");
-                services.AddDbContext<IdentityContext>(
 
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw new InvalidOperationException("La cadena de conexión 'DefaultConnection' no se encuentra en appsettings.json");
+                }
+
+                services.AddDbContext<IdentityContext>(
                     (serviceProvider, opt) =>
                     {
                         opt.EnableSensitiveDataLogging();
                         opt.UseSqlServer(connectionString,
-                        m => m.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName));
+                            m => m.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName));
                     },
                     contextLifetime: ServiceLifetime.Scoped,
                     optionsLifetime: ServiceLifetime.Scoped
                 );
             }
-
-            #endregion
         }
-
-        #endregion
-
     }
-
-
 }
